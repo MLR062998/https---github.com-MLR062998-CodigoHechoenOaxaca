@@ -14,7 +14,7 @@ img {
 form {
   display: flex;
   justify-content: center;
-  gap: 0.5em;
+  gap: 0.5\em;
   flex-flow: row wrap;
   max-width: 40vw;
   margin: auto;
@@ -37,3 +37,64 @@ button[type="submit"] {
   display: none;
 }
 
+/* Menu Styles */
+.custom-navbar {
+  background-color: #ffffff; /* Fondo estilo Galileo */
+  color: #fff;
+}
+
+.custom-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2c2c2c; /* Color de marca */
+}
+
+.custom-link {
+  color: #000000;
+  font-size: 1.1rem;
+  margin-right: 1rem;
+  transition: color 0.3s ease;
+}
+
+.custom-link:hover {
+  color: #FFC107; /* Cambio de color en hover */
+}
+
+.custom-wallet-btn {
+  background-color: #ffe600;
+  color: #000000;
+  border: none;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.custom-wallet-btn:hover {
+  background-color: #5C6BC0;
+}
+
+.custom-logout-btn {
+  background-color: #D32F2F;
+  color: #FFF;
+  border: none;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.custom-logout-btn:hover {
+  background-color: #F44336;
+}
+
+.custom-connect-btn {
+  background-color: #1E88E5;
+  color: #f5f108;
+  border: none;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.custom-connect-btn:hover {
+  background-color: #42A5F5;
+}

@@ -18,21 +18,21 @@ const Menu = () => {
 
   return (
     <div>
-      <nav className="navbar navbar-expand-lg bg-primary">
+      <nav className="navbar custom-navbar">
         <div className="container-fluid">
-          <Link to="/" className="navbar-brand">Mercado</Link>
+          <Link to="/" className="navbar-brand custom-brand">Mercado</Link>
           {isConnected && principal ? (
             <>
-              <Link to="/nuevo-producto" className="navbar-brand">Nuevo Producto</Link>
-              <Link to="/productos" className="navbar-brand">Productos</Link>
+              <Link to="/nuevo-producto" className="navbar-brand custom-link">Nuevo Producto</Link>
+              <Link to="/productos" className="navbar-brand custom-link">Productos</Link>
               <div className="d-flex ms-auto">
-                <Link to="/wallet" className="btn btn-secondary me-2" id="btnWallet">Wallet</Link>
-                <button className="btn btn-danger me-2" onClick={handleLogoutClick}>Salir</button>
+                <Link to="/wallet" className="btn custom-wallet-btn me-2">Wallet</Link>
+                <button className="btn custom-logout-btn me-2" onClick={handleLogoutClick}>Salir</button>
               </div>
             </>
           ) : (
             <div className="d-flex ms-auto">
-              <ConnectButton className="btn btn-primary me-2" />
+              <ConnectButton className="btn custom-connect-btn me-2" />
             </div>
           )}
         </div>
