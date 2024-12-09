@@ -14,7 +14,7 @@ const client = createClient({
   canisters: {
     'HechoenOaxaca-icp-backend': Productos_backend,
   },
-  providers: [new InternetIdentity({ providerUrl: 'http://be2us-64aaa-aaaaa-qaabq-cai.localhost:4943/' })],
+  providers: [new InternetIdentity({ providerUrl: 'http://aax3a-h4aaa-aaaaa-qaahq-cai.localhost:4943/' })],
   globalProviderConfig: {
     dev: true,
   },

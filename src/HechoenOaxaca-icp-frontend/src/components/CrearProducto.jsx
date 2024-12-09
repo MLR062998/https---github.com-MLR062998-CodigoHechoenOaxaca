@@ -1,10 +1,12 @@
 import { useCanister } from "@connect2ic/react";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CrearProducto = () => {
   const [marketplaceBackend] = useCanister("HechoenOaxaca-icp-backend");
   const [loading, setLoading] = useState("");
   const [images, setImages] = useState([]);
+  const navigate = useNavigate();
 
   const handleImageChange = (e) => {
     const selectedImages = Array.from(e.target.files);
@@ -12,6 +14,14 @@ const CrearProducto = () => {
       alert("Puedes subir un máximo de 3 imágenes.");
       return;
     }
+
+    for (const image of selectedImages) {
+      if (!["image/jpeg", "image/png"].includes(image.type)) {
+        alert("Solo se permiten imágenes en formato JPEG o PNG.");
+        return;
+      }
+    }
+
     setImages(selectedImages);
   };
 
@@ -24,36 +34,48 @@ const CrearProducto = () => {
     const artesano = form.artesano.value;
     const tipo = form.tipo.value;
 
+    if (!images.length) {
+      alert("Debes subir al menos una imagen.");
+      return;
+    }
+
     setLoading("Cargando...");
 
-    const imageBlobs = await Promise.all(
-      images.map((image) =>
-        image.arrayBuffer().then((buffer) => new Blob([buffer], { type: image.type }))
-      )
-    );
+    try {
+      // Convertir imágenes a Uint8Array
+      const imageBlobs = await Promise.all(
+        images.map(async (image) => {
+          const buffer = await image.arrayBuffer(); // Obtener el contenido de la imagen
+          return Array.from(new Uint8Array(buffer)); // Convertirlo a un array de números
+        })
+      );
 
-    await marketplaceBackend.createProducto(nombre, precio, descripcion, artesano, tipo, imageBlobs);
-    setLoading("");
-    setImages([]);
-    form.reset();
-    navigate("/productos"); // Redirige a la lista de productos
-    // Simulación de redirección al listado de productos al guardar
-    document.getElementById('btnProductList').click();
+      console.log("Imágenes convertidas para enviar al backend:", imageBlobs);
+
+      // Llamar al backend para crear el producto
+      await marketplaceBackend.createProducto(nombre, precio, descripcion, artesano, tipo, imageBlobs);
+
+      alert("Producto agregado exitosamente.");
+      setImages([]);
+      form.reset();
+      navigate("/productos");
+    } catch (error) {
+      console.error("Error al agregar producto:", error);
+      alert("Ocurrió un error al agregar el producto. Intenta nuevamente.");
+    } finally {
+      setLoading("");
+    }
   };
 
   return (
     <div className="row mt-5">
       <div className="col-2"></div>
       <div className="col-8">
-        {loading !== "" ? (
-          <div className="alert alert-primary">{loading}</div>
-        ) : (
-          <div></div>
-        )}
+        {loading && <div className="alert alert-primary">{loading}</div>}
         <div className="card">
           <div className="card-header">Registrar Producto</div>
           <div className="card-body">
-            <form onSubmit={saveProduct} style={{ display: "inline" }}>
+            <form onSubmit={saveProduct}>
               <div className="form-group">
                 <label htmlFor="nombre">Nombre del Producto</label>
                 <input type="text" className="form-control" id="nombre" placeholder="Ej: Olla de barro" required />
@@ -80,15 +102,21 @@ const CrearProducto = () => {
               </div>
               <div className="form-group">
                 <label htmlFor="imagenes">Subir Imágenes (Máximo 3)</label>
-                <input type="file" className="form-control" id="imagenes" accept="image/*" multiple onChange={handleImageChange} />
+                <input
+                  type="file"
+                  className="form-control"
+                  id="imagenes"
+                  accept="image/jpeg,image/png"
+                  multiple
+                  onChange={handleImageChange}
+                  required
+                />
               </div>
               <br />
               <div className="form-group">
                 <input type="submit" className="btn btn-success" value="Agregar Producto" />
               </div>
             </form>
-            {/* Botón invisible para simular la redirección al listado */}
-            <button id="btnProductList" style={{ display: "none" }}>Ir al listado de productos</button>
           </div>
         </div>
       </div>

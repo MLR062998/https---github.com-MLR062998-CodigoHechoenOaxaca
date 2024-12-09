@@ -1,4 +1,3 @@
-// Menu.js
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useConnect, ConnectDialog, ConnectButton } from '@connect2ic/react';
@@ -19,20 +18,20 @@ const Menu = () => {
   return (
     <div>
       <nav className="navbar custom-navbar">
-        <div className="container-fluid">
+        <div className="container-fluid custom-container">
           <Link to="/" className="navbar-brand custom-brand">Mercado</Link>
           {isConnected && principal ? (
-            <>
-              <Link to="/nuevo-producto" className="navbar-brand custom-link">Nuevo Producto</Link>
-              <Link to="/productos" className="navbar-brand custom-link">Productos</Link>
-              <div className="d-flex ms-auto">
-                <Link to="/wallet" className="btn custom-wallet-btn me-2">Wallet</Link>
-                <button className="btn custom-logout-btn me-2" onClick={handleLogoutClick}>Salir</button>
-              </div>
-            </>
+            <div className="custom-links-container">
+              <Link to="/nuevo-producto" className="custom-link">Nuevo Producto</Link>
+              <Link to="/productos" className="custom-link">Productos</Link>
+              <Link to="/wallet" className="btn custom-btn">Wallet</Link>
+              <button className="btn custom-btn logout-btn" onClick={handleLogoutClick}>
+                Salir
+              </button>
+            </div>
           ) : (
-            <div className="d-flex ms-auto">
-              <ConnectButton className="btn custom-connect-btn me-2" />
+            <div className="custom-links-container">
+              <ConnectButton className="btn custom-connect-btn" />
             </div>
           )}
         </div>
