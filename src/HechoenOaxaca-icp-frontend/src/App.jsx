@@ -3,7 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Menu from './components/Menu';
 import CrearProducto from './components/CrearProducto';
-import Products from './components/productos';
+import Products from './components/Products';
 import Home from './components/Home';
 import { Connect2ICProvider } from '@connect2ic/react';
 import * as Productos_backend from 'declarations/HechoenOaxaca-icp-backend';
@@ -28,7 +28,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/nuevo-producto" element={<CrearProducto />} />
-          <Route path="/productos" element={<Products />} />
+          <Route path="/Products" element={<Products />} />
+          
           {/* Otras rutas necesarias */}
         </Routes>
       </Router>

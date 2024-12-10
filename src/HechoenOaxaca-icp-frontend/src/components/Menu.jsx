@@ -1,53 +1,119 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useConnect, ConnectDialog, ConnectButton } from '@connect2ic/react';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import React, { useState } from "react";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import Wallet from "./Wallet.jsx"; // Componente de Wallet
+import { AuthClient } from "@dfinity/auth-client"; // Auth Client de NFID
+import "../index.scss";
 
 const Menu = () => {
-  const { principal, isConnected, disconnect } = useConnect();
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+  const [principalId, setPrincipalId] = useState(null);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const navigate = useNavigate();
 
-  const handleLogoutClick = () => setShowConfirmModal(true);
-  const handleConfirmLogout = () => {
-    setShowConfirmModal(false);
-    disconnect();
+  // Maneja la autenticación con NFID
+  const handleLogin = async () => {
+    const authClient = await AuthClient.create();
+    const APP_NAME = "Hecho en Oaxaca";
+    const APP_LOGO = "https://example.com/logo.png"; // Cambia por la URL de tu logo
+    const identityProvider = `https://nfid.one/authenticate?applicationName=${APP_NAME}&applicationLogo=${APP_LOGO}`;
+
+    authClient.login({
+      identityProvider,
+      onSuccess: () => {
+        const principal = authClient.getIdentity().getPrincipal().toText();
+        setPrincipalId(principal);
+        setIsConnected(true);
+        alert(`Bienvenido. Tu Principal ID: ${principal}`);
+      },
+      onError: (error) => {
+        console.error("Error de autenticación:", error);
+      },
+    });
   };
-  const handleCloseModal = () => setShowConfirmModal(false);
+
+  // Maneja la desconexión
+  const handleDisconnect = () => {
+    setIsConnected(false);
+    setPrincipalId(null);
+    navigate("/");
+  };
 
   return (
     <div>
-      <nav className="navbar custom-navbar">
+      <nav className="navbar navbar-expand-lg custom-navbar">
         <div className="container-fluid custom-container">
-          <Link to="/" className="navbar-brand custom-brand">Mercado</Link>
-          {isConnected && principal ? (
-            <div className="custom-links-container">
-              <Link to="/nuevo-producto" className="custom-link">Nuevo Producto</Link>
-              <Link to="/productos" className="custom-link">Productos</Link>
-              <Link to="/wallet" className="btn custom-btn">Wallet</Link>
-              <button className="btn custom-btn logout-btn" onClick={handleLogoutClick}>
-                Salir
+          <Link to="/" className="custom-brand">
+            Hecho en Oaxaca
+          </Link>
+          <div className="custom-links-container">
+            {isConnected ? (
+              <>
+                <Link to="/nuevo-producto" className="custom-link">
+                  Nuevo Producto
+                </Link>
+                <Link to="/Products" className="custom-link">
+                  Productos
+                </Link>
+                <Link
+                  to="/wallet"
+                  className="custom-btn wallet-btn"
+                  id="btnWallet"
+                >
+                  Wallet
+                </Link>
+                <button
+                  className="custom-btn logout-btn"
+                  onClick={() => setShowLogoutModal(true)}
+                >
+                  Salir
+                </button>
+              </>
+            ) : (
+              <button className="custom-btn connect-btn" onClick={handleLogin}>
+                Artesanos
               </button>
-            </div>
-          ) : (
-            <div className="custom-links-container">
-              <ConnectButton className="btn custom-connect-btn" />
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </nav>
-      <ConnectDialog />
 
-      <Modal show={showConfirmModal} onHide={handleCloseModal}>
+      {/* Modal de confirmación de salida */}
+      <Modal show={showLogoutModal} onHide={() => setShowLogoutModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Confirmación</Modal.Title>
         </Modal.Header>
-        <Modal.Body>¿Seguro que quiere salir?</Modal.Body>
+        <Modal.Body>¿Está seguro de que quiere salir?</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>Cancelar</Button>
-          <Button variant="danger" onClick={handleConfirmLogout}>Sí</Button>
+          <Button
+            variant="secondary"
+            onClick={() => setShowLogoutModal(false)}
+          >
+            Cancelar
+          </Button>
+          <Button
+            variant="danger"
+            onClick={() => {
+              setShowLogoutModal(false); // Cierra el modal
+              handleDisconnect(); // Desconectar al usuario
+            }}
+          >
+            Salir
+          </Button>
         </Modal.Footer>
       </Modal>
+
+      {/* Rutas para los componentes */}
+      <Routes>
+        <Route
+          path="/wallet"
+          element={
+            <Wallet principalId={principalId} isConnected={isConnected} />
+          }
+        />
+        {/* Agrega aquí otras rutas, si es necesario */}
+      </Routes>
     </div>
   );
 };
