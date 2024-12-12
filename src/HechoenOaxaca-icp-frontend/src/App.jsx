@@ -9,6 +9,8 @@ import { Connect2ICProvider } from '@connect2ic/react';
 import * as Productos_backend from 'declarations/HechoenOaxaca-icp-backend';
 import { createClient } from '@connect2ic/core';
 import { InternetIdentity } from '@connect2ic/core/providers/internet-identity';
+import Compra from './components/Compra';
+import Registro from './components/Registro';
 
 const client = createClient({
   canisters: {
@@ -29,6 +31,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/nuevo-producto" element={<CrearProducto />} />
           <Route path="/Products" element={<Products />} />
+          <Route path="/Compra" element={<Compra />} />
+          <Route path="/Registro" element={<Registro />} />
           
           {/* Otras rutas necesarias */}
         </Routes>
